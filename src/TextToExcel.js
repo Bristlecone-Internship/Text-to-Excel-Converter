@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import * as XLSX from 'xlsx';
-import { log } from './logger'; // Import the logger
 
 const TextToExcel = () => {
   const [files, setFiles] = useState([]);
@@ -9,6 +8,30 @@ const TextToExcel = () => {
   const [uploadMessage, setUploadMessage] = useState(null);
   const [excelData, setExcelData] = useState(null);
   const [showPreviewIndex, setShowPreviewIndex] = useState(-1);
+
+  const log = (message) => {
+    if (message) {
+      fetch('/log', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            console.log('Log message sent to server:', message);
+          } else {
+            console.error('Error sending log message:', response.status);
+          }
+        })
+        .catch((error) => {
+          console.error('Error sending log message:', error);
+        });
+    } else {
+      console.error('Empty log message');
+    }
+  };
 
   const handleFileChange = (event) => {
     const newFiles = Array.from(event.target.files);
